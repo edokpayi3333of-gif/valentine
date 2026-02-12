@@ -1,87 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Be My Val</title>
-  <style>
-    body {
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #ff758c, #ff7eb3);
-    }
+<meta charset="UTF-8">
+<title>Be My Valentine 💖</title>
 
-    .card {
-      background: white;
-      padding: 40px;
-      border-radius: 15px;
-      text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    }
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-    h1 {
-      margin-bottom: 30px;
-    }
+  body {
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+    background: url("https://images.unsplash.com/photo-1517841905240-472988babdf9") center/cover no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-    button {
-      padding: 10px 25px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin: 10px;
-    }
+  .overlay {
+    background: rgba(255, 182, 193, 0.7);
+    position: absolute;
+    inset: 0;
+  }
 
-    #yes {
-      background-color: #ff4d6d;
-      color: white;
-    }
+  .card {
+    position: relative;
+    background: rgba(255,255,255,0.9);
+    padding: 40px 50px;
+    border-radius: 20px;
+    text-align: center;
+    z-index: 10;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    animation: pop 1s ease;
+  }
 
-    #no {
-      background-color: #ccc;
-      position: absolute;
-    }
+  @keyframes pop {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
 
-    #message {
-      display: none;
-      font-size: 22px;
-      color: #ff4d6d;
-      margin-top: 20px;
-      font-weight: bold;
+  h1 {
+    color: #ff4d6d;
+    margin-bottom: 30px;
+    font-size: 28px;
+  }
+
+  button {
+    padding: 12px 30px;
+    font-size: 16px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s ease;
+  }
+
+  #yes {
+    background: #ff4d6d;
+    color: white;
+  }
+
+  #yes:hover {
+    transform: scale(1.1);
+  }
+
+  #no {
+    background: #ddd;
+    position: absolute;
+  }
+
+  #message {
+    display: none;
+    font-size: 24px;
+    color: #ff4d6d;
+    margin-top: 20px;
+    font-weight: bold;
+  }
+
+  /* Floating hearts */
+  .heart {
+    position: absolute;
+    bottom: -20px;
+    font-size: 20px;
+    animation: floatUp 6s linear infinite;
+    color: #ff4d6d;
+    opacity: 0.8;
+  }
+
+  @keyframes floatUp {
+    from {
+      transform: translateY(0);
+      opacity: 1;
     }
-  </style>
+    to {
+      transform: translateY(-110vh);
+      opacity: 0;
+    }
+  }
+
+  canvas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+  }
+</style>
 </head>
+
 <body>
 
-  <div class="card" id="card">
-    <h1>Will you be my Val? ❤️</h1>
-    <button id="yes">Yes</button>
-    <button id="no">No</button>
-    <div id="message">🎉 Congratulations! You’re my Valentine 💖</div>
-  </div>
+<div class="overlay"></div>
+<canvas id="fireworks"></canvas>
 
-  <script>
-    const noBtn = document.getElementById("no");
-    const yesBtn = document.getElementById("yes");
-    const message = document.getElementById("message");
-    const card = document.getElementById("card");
+<div class="card" id="card">
+  <h1>Will you be my Valentine? 💖</h1>
+  <button id="yes">Yes</button>
+  <button id="no">No</button>
+  <div id="message">🎉 Congratulations! You’re my Valentine 💕</div>
+</div>
 
-    noBtn.addEventListener("mouseover", () => {
-      const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-      const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
-      noBtn.style.left = x + "px";
-      noBtn.style.top = y + "px";
-    });
+<script>
+  const noBtn = document.getElementById("no");
+  const yesBtn = document.getElementById("yes");
+  const message = document.getElementById("message");
 
-    yesBtn.addEventListener("click", () => {
-      card.querySelector("h1").style.display = "none";
-      yesBtn.style.display = "none";
-      noBtn.style.display = "none";
-      message.style.display = "block";
-    });
-  </script>
+  // No button runs away
+  noBtn.addEventListener("mouseover", () => {
+    const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+    const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+  });
+
+  // Floating hearts
+  setInterval(() => {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "💖";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = Math.random() * 15 + 15 + "px";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 6000);
+  }, 400);
+
+  // Fireworks
+  const canvas = document.getElementById("fireworks");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  function firework() {
+    const x = Math.random() * canvas.width;
+    const y = Math.random() * canvas.height / 2;
+    for (let i = 0; i < 50; i++) {
+      ctx.beginPath();
+      ctx.arc(x, y, Math.random() * 2, 0, Math.PI * 2);
+      ctx.fillStyle = `hsl(${Math.random() * 360},100%,60%)`;
+      ctx.fill();
+    }
+  }
+
+  yesBtn.addEventListener("click", () => {
+    document.querySelector("h1").style.display = "none";
+    yesBtn.style.display = "none";
+    noBtn.style.display = "none";
+    message.style.display = "block";
+
+    const fireworksInterval = setInterval(firework, 300);
+    setTimeout(() => clearInterval(fireworksInterval), 4000);
+  });
+</script>
 
 </body>
 </html>
